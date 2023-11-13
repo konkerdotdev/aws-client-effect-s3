@@ -8,7 +8,7 @@ describe('error', () => {
     const error = new Error('BOOM!');
     const params: GetObjectCommandInput = { Bucket: 'test-bucket', Key: 'test-key' };
     const actual = P.pipe(error, unit.toS3Error(params));
-    const expected = { message: 'BOOM!', _tag: 'S3Error', _Params: params };
+    const expected = { message: 'BOOM!', cause: error, _tag: 'S3Error', _Params: params };
     expect(actual).toStrictEqual(expected);
   });
 
@@ -16,7 +16,7 @@ describe('error', () => {
     const error = 'BOOM!';
     const params: GetObjectCommandInput = { Bucket: 'test-bucket', Key: 'test-key' };
     const actual = P.pipe(error, unit.toS3Error(params));
-    const expected = { message: 'BOOM!', _tag: 'S3Error', _Params: params };
+    const expected = { message: 'BOOM!', cause: error, _tag: 'S3Error', _Params: params };
     expect(actual).toStrictEqual(expected);
   });
 });
