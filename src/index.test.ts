@@ -29,6 +29,12 @@ describe('aws-client-effect-s3', () => {
     s3Mock.reset();
   });
 
+  describe('Error tag', () => {
+    it('should work as expected', () => {
+      expect(unit.S3_ERROR_TAG).toEqual('@konker.dev/aws-client-effect-s3/S3Error');
+    });
+  });
+
   // ------------------------------------------------------------------------
   describe('defaultS3ClientFactory', () => {
     it('should work as expected', async () => {
