@@ -6,6 +6,7 @@ import type { SmithyResolvedConfiguration } from '@smithy/smithy-client/dist-typ
 
 import type { S3Error } from './lib/error';
 import { toS3Error } from './lib/error';
+export { TAG as S3_ERROR_TAG } from './lib/error';
 
 export type S3ClientFactory = (config: s3Client.S3ClientConfig) => s3Client.S3Client;
 export const defaultS3ClientFactory: S3ClientFactory = (config: s3Client.S3ClientConfig) =>

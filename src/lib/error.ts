@@ -1,4 +1,4 @@
-export const TAG = 'S3Error';
+export const TAG = '@konker.dev/aws-client-effect-s3/S3Error';
 
 export type S3Error = {
   readonly _tag: typeof TAG;
