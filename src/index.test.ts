@@ -12,6 +12,7 @@ import { mockClient } from 'aws-sdk-client-mock';
 
 import * as unit from './index';
 import { S3ClientDeps } from './index';
+import { TAG } from './lib/error';
 
 const s3Mock = mockClient(s3Client.S3Client);
 
@@ -25,12 +26,9 @@ describe('aws-client-effect-s3', () => {
       s3Client: new s3Client.S3Client({}),
     });
   });
-  beforeEach(() => {
-    s3Mock.reset();
-  });
 
   describe('Error tag', () => {
-    it('should work as expected', () => {
+    it('should export as expected', () => {
       expect(unit.S3_ERROR_TAG).toEqual('@konker.dev/aws-client-effect-s3/S3Error');
     });
   });
@@ -44,70 +42,140 @@ describe('aws-client-effect-s3', () => {
 
   // ------------------------------------------------------------------------
   describe('GetObjectCommand', () => {
+    beforeEach(() => {
+      s3Mock.reset();
+    });
+
     it('should work as expected', async () => {
       s3Mock.on(s3Client.GetObjectCommand).resolves({ Body: 'Hello, World!' } as any);
 
       const params: GetObjectCommandInput = { Bucket: 'test-bucket', Key: 'test-key' };
-      const command = P.pipe(unit.GetObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
-      const actual = await P.Effect.runPromise(command);
       const expected = { Body: 'Hello, World!', _Params: params };
-      expect(actual).toStrictEqual(expected);
+      const command = P.pipe(unit.GetObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
+      await expect(P.Effect.runPromise(command)).resolves.toStrictEqual(expected);
+      expect(s3Mock.calls().length).toEqual(1);
+    });
+
+    it('should fail as expected', async () => {
+      s3Mock.on(s3Client.GetObjectCommand).rejects({ $metadata: { httpStatusCode: 404 }, code: 'NotFound' } as any);
+
+      const params: GetObjectCommandInput = { Bucket: 'test-bucket', Key: 'test-key-not-found' };
+      const command = P.pipe(unit.GetObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
+      await expect(P.Effect.runPromise(command)).rejects.toThrowErrorMatchingSnapshot(
+        JSON.stringify({ _tag: TAG, message: 'NotFound' })
+      );
       expect(s3Mock.calls().length).toEqual(1);
     });
   });
 
   // ------------------------------------------------------------------------
   describe('PutObjectCommand', () => {
+    beforeEach(() => {
+      s3Mock.reset();
+    });
+
     it('should work as expected', async () => {
       s3Mock.on(s3Client.PutObjectCommand).resolves({} as any);
 
       const params: PutObjectCommandInput = { Bucket: 'test-bucket', Key: 'test-key', Body: 'test-body' };
-      const command = P.pipe(unit.PutObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
-      const actual = await P.Effect.runPromise(command);
       const expected = { _Params: params };
-      expect(actual).toStrictEqual(expected);
+      const command = P.pipe(unit.PutObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
+      await expect(P.Effect.runPromise(command)).resolves.toStrictEqual(expected);
+      expect(s3Mock.calls().length).toEqual(1);
+    });
+
+    it('should fail as expected', async () => {
+      s3Mock.on(s3Client.PutObjectCommand).rejects({ $metadata: { httpStatusCode: 404 }, code: 'NotFound' } as any);
+
+      const params: PutObjectCommandInput = { Bucket: 'test-bucket-not-found', Key: 'test-key' };
+      const command = P.pipe(unit.PutObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
+      await expect(P.Effect.runPromise(command)).rejects.toThrowErrorMatchingSnapshot(
+        JSON.stringify({ _tag: TAG, message: 'NotFound' })
+      );
       expect(s3Mock.calls().length).toEqual(1);
     });
   });
 
   // ------------------------------------------------------------------------
   describe('HeadObjectCommand', () => {
+    beforeEach(() => {
+      s3Mock.reset();
+    });
+
     it('should work as expected', async () => {
       s3Mock.on(s3Client.HeadObjectCommand).resolves({ Body: 'Hello, World!' } as any);
 
       const params: HeadObjectCommandInput = { Bucket: 'test-bucket', Key: 'test-key' };
-      const command = P.pipe(unit.HeadObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
-      const actual = await P.Effect.runPromise(command);
       const expected = { Body: 'Hello, World!', _Params: params };
-      expect(actual).toStrictEqual(expected);
+      const command = P.pipe(unit.HeadObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
+      await expect(P.Effect.runPromise(command)).resolves.toStrictEqual(expected);
+      expect(s3Mock.calls().length).toEqual(1);
+    });
+
+    it('should fail as expected', async () => {
+      s3Mock.on(s3Client.HeadObjectCommand).rejects({ $metadata: { httpStatusCode: 404 }, code: 'NotFound' } as any);
+
+      const params: HeadObjectCommandInput = { Bucket: 'test-bucket', Key: 'test-key-not-found' };
+      const command = P.pipe(unit.HeadObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
+      await expect(P.Effect.runPromise(command)).rejects.toThrowErrorMatchingSnapshot(
+        JSON.stringify({ _tag: TAG, message: 'NotFound' })
+      );
       expect(s3Mock.calls().length).toEqual(1);
     });
   });
 
   // ------------------------------------------------------------------------
   describe('DeleteObjectCommand', () => {
+    beforeEach(() => {
+      s3Mock.reset();
+    });
+
     it('should work as expected', async () => {
       s3Mock.on(s3Client.DeleteObjectCommand).resolves({} as any);
 
       const params: DeleteObjectCommandInput = { Bucket: 'test-bucket', Key: 'test-key' };
-      const command = P.pipe(unit.DeleteObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
-      const actual = await P.Effect.runPromise(command);
       const expected = { _Params: params };
-      expect(actual).toStrictEqual(expected);
+      const command = P.pipe(unit.DeleteObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
+      await expect(P.Effect.runPromise(command)).resolves.toStrictEqual(expected);
+      expect(s3Mock.calls().length).toEqual(1);
+    });
+
+    it('should fail as expected', async () => {
+      s3Mock.on(s3Client.DeleteObjectCommand).rejects({ $metadata: { httpStatusCode: 404 }, code: 'NotFound' } as any);
+
+      const params: DeleteObjectCommandInput = { Bucket: 'test-bucket', Key: 'test-key-not-found' };
+      const command = P.pipe(unit.DeleteObjectCommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
+      await expect(P.Effect.runPromise(command)).rejects.toThrowErrorMatchingSnapshot(
+        JSON.stringify({ _tag: TAG, message: 'NotFound' })
+      );
       expect(s3Mock.calls().length).toEqual(1);
     });
   });
 
   // ------------------------------------------------------------------------
   describe('ListObjectsV2Command', () => {
+    beforeEach(() => {
+      s3Mock.reset();
+    });
+
     it('should work as expected', async () => {
       s3Mock.on(s3Client.ListObjectsV2Command).resolves({ Contents: [] });
 
       const params: ListObjectsV2CommandInput = { Bucket: 'test-bucket' };
-      const command = P.pipe(unit.ListObjectsV2CommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
-      const actual = await P.Effect.runPromise(command);
       const expected = { Contents: [], _Params: params };
-      expect(actual).toStrictEqual(expected);
+      const command = P.pipe(unit.ListObjectsV2CommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
+      await expect(P.Effect.runPromise(command)).resolves.toStrictEqual(expected);
+      expect(s3Mock.calls().length).toEqual(1);
+    });
+
+    it('should fail as expected', async () => {
+      s3Mock.on(s3Client.ListObjectsV2Command).rejects({ $metadata: { httpStatusCode: 404 }, code: 'NotFound' } as any);
+
+      const params: ListObjectsV2CommandInput = { Bucket: 'test-bucket-not-found' };
+      const command = P.pipe(unit.ListObjectsV2CommandEffect(params), P.Effect.provideService(S3ClientDeps, deps));
+      await expect(P.Effect.runPromise(command)).rejects.toThrowErrorMatchingSnapshot(
+        JSON.stringify({ _tag: TAG, message: 'NotFound' })
+      );
       expect(s3Mock.calls().length).toEqual(1);
     });
   });
