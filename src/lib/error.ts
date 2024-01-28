@@ -17,8 +17,8 @@ export const toS3Error =
         typeof x === 'object' && x && 'message' in x && typeof x.message === 'string' && x.message.length > 0
           ? String(x.message)
           : typeof x === 'object' && x && 'code' in x
-          ? String(x.code)
-          : String(x),
+            ? String(x.code)
+            : String(x),
       cause: x,
     };
   };
