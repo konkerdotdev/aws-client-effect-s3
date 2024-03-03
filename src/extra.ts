@@ -14,7 +14,7 @@ import { PromiseDependentWritableStream } from './lib/PromiseDependentWritableSt
 export function GetSignedUrlEffect(
   params: s3Client.GetObjectCommandInput,
   options?: RequestPresigningArguments
-): P.Effect.Effect<S3ClientDeps, S3Error, { readonly result: string } & S3EchoParams<s3Client.GetObjectCommandInput>> {
+): P.Effect.Effect<{ readonly result: string } & S3EchoParams<s3Client.GetObjectCommandInput>, S3Error, S3ClientDeps> {
   return P.pipe(
     S3ClientDeps,
     P.Effect.flatMap((deps) =>
@@ -33,7 +33,7 @@ export function GetSignedUrlEffect(
 export function UploadObjectEffect(
   params: s3Client.PutObjectCommandInput,
   data: Buffer | string
-): P.Effect.Effect<S3ClientDeps, S3Error, void> {
+): P.Effect.Effect<void, S3Error, S3ClientDeps> {
   return P.pipe(
     S3ClientDeps,
     P.Effect.flatMap((deps) =>
@@ -63,7 +63,7 @@ export function UploadObjectEffect(
 
 export function UploadObjectWriteStreamEffect(
   params: s3Client.PutObjectCommandInput
-): P.Effect.Effect<S3ClientDeps, S3Error, PromiseDependentWritableStream> {
+): P.Effect.Effect<PromiseDependentWritableStream, S3Error, S3ClientDeps> {
   return P.pipe(
     S3ClientDeps,
     P.Effect.flatMap((deps) =>

@@ -15,7 +15,7 @@ export const defaultS3ClientFactory: S3ClientFactory = (config: s3Client.S3Clien
 export type S3FactoryDeps = {
   readonly s3ClientFactory: S3ClientFactory;
 };
-export const S3FactoryDeps = P.Context.Tag<S3FactoryDeps>('@s3-client-fp/S3FactoryDeps');
+export const S3FactoryDeps = P.Context.GenericTag<S3FactoryDeps>('@s3-client-fp/S3FactoryDeps');
 
 export const defaultS3FactoryDeps = P.Effect.provideService(
   S3FactoryDeps,
@@ -28,7 +28,7 @@ export const defaultS3FactoryDeps = P.Effect.provideService(
 export type S3ClientDeps = {
   readonly s3Client: S3Client;
 };
-export const S3ClientDeps = P.Context.Tag<S3ClientDeps>('s3-client-fp/S3ClientDeps');
+export const S3ClientDeps = P.Context.GenericTag<S3ClientDeps>('s3-client-fp/S3ClientDeps');
 
 export type S3EchoParams<I> = { _Params: I };
 
@@ -47,7 +47,7 @@ export function FabricateCommandEffect<I extends s3Client.ServiceInputTypes, O e
 ): (
   params: I,
   options?: HttpHandlerOptions | undefined
-) => P.Effect.Effect<S3ClientDeps, S3Error, O & S3EchoParams<I>> {
+) => P.Effect.Effect<O & S3EchoParams<I>, S3Error, S3ClientDeps> {
   return function (params, options) {
     return P.pipe(
       S3ClientDeps,

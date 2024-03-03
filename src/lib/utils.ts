@@ -11,7 +11,7 @@ import type { PromiseDependentWritableStream } from './PromiseDependentWritableS
 export function waitForPromiseDependentWritableStreamPipe(
   readStream: Readable,
   writeStream: PromiseDependentWritableStream
-): P.Effect.Effect<never, Error, number> {
+): P.Effect.Effect<number, Error> {
   return P.Effect.tryPromise({
     try: () =>
       new Promise((resolve, reject) => {
