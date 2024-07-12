@@ -1,6 +1,6 @@
 {
   "name": "@konker.dev/aws-client-effect-s3",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": "Konrad Markus <mail@konker.dev>",
   "description": "AWS S3 client for Node.js TypeScript projects based on Effect-ts",
   "license": "ISC",
@@ -27,9 +27,9 @@
     "@aws-sdk/client-s3": "^3.449.0",
     "@aws-sdk/lib-storage": "^3.449.0",
     "@aws-sdk/s3-request-presigner": "^3.449.0",
-    "@effect/schema": "^0.63.2",
-    "@konker.dev/effect-ts-prelude": "^0.0.13",
-    "effect": "^2.4.1"
+    "@effect/schema": "^0.68.23",
+    "@konker.dev/effect-ts-prelude": "^0.0.16",
+    "effect": "^3.5.3"
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.449.0",
