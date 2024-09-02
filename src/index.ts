@@ -12,12 +12,12 @@ export type S3ClientFactory = (config: s3Client.S3ClientConfig) => s3Client.S3Cl
 export const defaultS3ClientFactory: S3ClientFactory = (config: s3Client.S3ClientConfig) =>
   new s3Client.S3Client(config);
 
-export type S3FactoryDeps = {
+export type S3ClientFactoryDeps = {
   readonly s3ClientFactory: S3ClientFactory;
 };
-export const S3ClientFactoryDeps = P.Context.GenericTag<S3FactoryDeps>('@s3-client-fp/S3FactoryDeps');
+export const S3ClientFactoryDeps = P.Context.GenericTag<S3ClientFactoryDeps>('@s3-client-fp/S3ClientFactoryDeps');
 
-export const defaultS3FactoryDeps = P.Effect.provideService(
+export const defaultS3ClientFactoryDeps = P.Effect.provideService(
   S3ClientFactoryDeps,
   S3ClientFactoryDeps.of({
     s3ClientFactory: defaultS3ClientFactory,
