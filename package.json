@@ -15,7 +15,7 @@
   },
   "keywords": [
     "aws",
-    "S3",
+    "SNS",
     "node",
     "boilerplate",
     "typescript",
