@@ -1,6 +1,6 @@
 {
   "name": "@konker.dev/aws-client-effect-s3",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Konrad Markus <mail@konker.dev>",
   "description": "AWS S3 client for Node.js TypeScript projects based on Effect-ts",
   "license": "ISC",
@@ -15,7 +15,7 @@
   },
   "keywords": [
     "aws",
-    "S3",
+    "SNS",
     "node",
     "boilerplate",
     "typescript",
