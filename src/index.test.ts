@@ -41,6 +41,32 @@ describe('aws-client-effect-s3', () => {
   });
 
   // ------------------------------------------------------------------------
+  describe('defaultS3ClientFactoryDeps', () => {
+    it('should work as expected', async () => {
+      const actualEffect = P.pipe(
+        unit.S3ClientFactoryDeps,
+        P.Effect.map((deps) => deps.s3ClientFactory),
+        unit.defaultS3ClientFactoryDeps
+      );
+      const actual = P.Effect.runSync(actualEffect);
+      expect(actual).toBeInstanceOf(Function);
+    });
+  });
+
+  // ------------------------------------------------------------------------
+  describe('defaultS3ClientDeps', () => {
+    it('should work as expected', async () => {
+      const actualEffect = P.pipe(
+        unit.S3ClientDeps,
+        P.Effect.map((deps) => deps.s3Client),
+        unit.defaultS3ClientDeps({})
+      );
+      const actual = P.Effect.runSync(actualEffect);
+      expect(actual).toBeInstanceOf(S3Client);
+    });
+  });
+
+  // ------------------------------------------------------------------------
   describe('GetObjectCommand', () => {
     beforeEach(() => {
       s3Mock.reset();
