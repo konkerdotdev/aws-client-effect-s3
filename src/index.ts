@@ -8,6 +8,7 @@ import type { S3Error } from './lib/error';
 import { toS3Error } from './lib/error';
 export { TAG as S3_ERROR_TAG } from './lib/error';
 
+//------------------------------------------------------
 export type S3ClientFactory = (config: s3Client.S3ClientConfig) => s3Client.S3Client;
 export const defaultS3ClientFactory: S3ClientFactory = (config: s3Client.S3ClientConfig) =>
   new s3Client.S3Client(config);
@@ -30,10 +31,18 @@ export type S3ClientDeps = {
 };
 export const S3ClientDeps = P.Context.GenericTag<S3ClientDeps>('s3-client-fp/S3ClientDeps');
 
-export type S3EchoParams<I> = { _Params: I };
+export const defaultS3ClientDeps = (config: s3Client.S3ClientConfig) =>
+  P.Effect.provideService(
+    S3ClientDeps,
+    S3ClientDeps.of({
+      s3Client: defaultS3ClientFactory(config),
+    })
+  );
 
 // --------------------------------------------------------------------------
 // Wrapper
+export type S3EchoParams<I> = { _Params: I };
+
 export function FabricateCommandEffect<I extends s3Client.ServiceInputTypes, O extends s3Client.ServiceOutputTypes>(
   cmdCtor: new (
     params: I
